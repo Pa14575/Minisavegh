@@ -1,7 +1,7 @@
 // MINISAVE CUSTOMER SERVICE WORKER
 // Save Small. Grow Big.
 
-const CACHE_NAME = "minisave-customer-v4";
+const CACHE_NAME = "minisave-customer-v5";
 
 const APP_FILES = [
   "/",

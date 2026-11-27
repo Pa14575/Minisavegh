@@ -1,9 +1,9 @@
 {
-  "id": "/admin",
-  "name": "MINISAVE ADMIN",
-  "short_name": "MINISAVE A",
-  "description": "MINISAVE Administration Dashboard",
-  "start_url": "/admin",
+  "id": "/",
+  "name": "MINISAVE - Save Small. Grow Big.",
+  "short_name": "MINISAVE",
+  "description": "Save Small. Grow Big.",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -17,15 +17,9 @@
       "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/icon.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]

@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101d35">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>MINISAVE Admin</title>
+
+<style>
+:root {
+  --navy:#08172f;
+  --blue:#173c63;
+  --gold:#e8b94f;
+  --bg:#f3f6fb;
+  --muted:#64748b;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:#152238;
+}
+
+header {
+  background:var(--navy);
+  color:white;
+  padding:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+header strong { font-size:20px; letter-spacing:1px; }
+header span { color:var(--gold); font-size:12px; }
+
+main {
+  max-width:1100px;
+  margin:25px auto;
+  padding:0 15px;
+}
+
+.panel {
+  background:white;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 5px 22px #0b1b3210;
+  margin-bottom:18px;
+}
+
+.login-panel {
+  max-width:430px;
+  margin:60px auto;
+}
+
+.muted {
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+}
+
+label {
+  display:block;
+  margin:14px 0 7px;
+  font-weight:bold;
+  font-size:13px;
+}
+
+input {
+  width:100%;
+  padding:12px;
+  border:1px solid #ccd5e1;
+  border-radius:9px;
+  font-size:16px;
+}
+  textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #ccd5e1;
+  border-radius:9px;
+  font-size:16px;
+  font-family:Arial,sans-serif;
+  resize:vertical;
+  }
+
+button {
+  border:0;
+  border-radius:9px;
+  padding:12px 15px;
+  background:var(--gold);
+  color:var(--navy);
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:disabled {
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.full { width:100%; margin-top:16px; }
+.secondary { background:var(--blue); color:white; }
+.ghost { background:#eaf0f7; color:var(--navy); }
+.danger { background:#dc3545; color:white; }
+
+.message {
+  margin-top:12px;
+  font-size:13px;
+  color:#a12b2b;
+}
+
+.topline {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:12px;
+  margin:15px 0;
+}
+
+.stat {
+  background:white;
+  border:1px solid #e5eaf1;
+  border-radius:12px;
+  padding:17px;
+}
+
+.stat small { color:var(--muted); }
+
+.stat strong {
+  display:block;
+  font-size:23px;
+  margin-top:9px;
+  color:var(--navy);
+  overflow-wrap:anywhere;
+}
+
+nav {
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin:20px 0;
+}
+
+nav button {
+  background:#e7edf5;
+  color:var(--navy);
+}
+
+nav button.active {
+  background:var(--blue);
+  color:white;
+}
+
+.section { display:none; }
+.section.active { display:block; }
+
+.list-item {
+  background:#f8fafc;
+  border:1px solid #e5eaf1;
+  padding:15px;
+  border-radius:11px;
+  margin-bottom:12px;
+  overflow-wrap:anywhere;
+}
+
+.list-item p {
+  line-height:1.6;
+  font-size:14px;
+}
+
+.list-item button {
+  margin-top:10px;
+  margin-right:5px;
+}
+
+.notice {
+  background:#fff8e5;
+  border:1px solid #f1d88e;
+  padding:13px;
+  border-radius:10px;
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:15px;
+}
+
+footer {
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+  padding:25px;
+}
+
+[hidden] { display:none!important; }
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <strong>MINISAVE</strong><br>
+    <span>ADMINISTRATION</span>
+  </div>
+  <span>PRIVATE ADMIN APP</span>
+</header>
+
+<main>
+
+<!-- LOGIN -->
+
+<section id="loginView" class="panel login-panel">
+
+<h2>Admin sign in</h2>
+
+<p class="muted">
+Sign in using your existing MINISAVE administrator account.
+</p>
+
+<form id="loginForm">
+
+<label>Email</label>
+<input id="email" type="email" required autocomplete="username">
+
+<label>Password</label>
+<input id="password" type="password" required autocomplete="current-password">
+
+<button class="full" type="submit">Sign in</button>
+
+</form>
+
+<p id="loginMessage" class="message"></p>
+
+</section>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboardView" hidden>
+
+<div class="topline">
+
+<div>
+<h2>Admin Overview</h2>
+<p class="muted">Signed in as <span id="adminEmail"></span></p>
+</div>
+
+<button id="logoutBtn" class="ghost">Sign out</button>
+
+</div>
+
+
+<div class="notice">
+This dashboard manages MINISAVE administration.
+Customer wallet balances are not affected by reporting resets.
+</div>
+
+
+<nav>
+
+<button class="active" data-tab="overview">Overview</button>
+<button data-tab="deposits">Deposits</button>
+<button data-tab="withdrawals">Withdrawals</button>
+<button data-tab="customers">Customers</button>
+<button data-tab="balances">Customer Balances</button>
+<button data-tab="transactions">Transactions</button>
+  <button data-tab="commissions">Commissions</button>
+<button data-tab="campaigns">Campaign Management</button>
+<button data-tab="announcements">Announcements</button>
+
+</nav>
+
+
+<!-- OVERVIEW -->
+
+<section id="overview" class="section active">
+
+<div class="grid">
+
+<div class="stat">
+<small>Total Customers</small>
+<strong id="totalCustomers">—</strong>
+</div>
+
+<div class="stat">
+<small>Total Deposits (Current Period)</small>
+<strong id="totalDeposits">—</strong>
+</div>
+
+<div class="stat">
+<small>Total Withdrawals (Current Period)</small>
+<strong id="totalWithdrawals">—</strong>
+</div>
+
+<div class="stat">
+<small>Total Customer Wallet Balances</small>
+<strong id="totalWallets">—</strong>
+</div>
+
+<div class="stat">
+<small>Pending Deposits</small>
+<strong id="pendingDeposits">—</strong>
+</div>
+
+<div class="stat">
+<small>Pending Withdrawals</small>
+<strong id="pendingWithdrawals">—</strong>
+</div>
+
+<div class="stat">
+<small>Commission (Current Period)</small>
+<strong id="totalCommission">—</strong>
+</div>
+
+</div>
+
+<button id="clearHistoryBtn" class="danger">
+Clear Current History
+</button>
+
+<button id="refreshOverview" class="ghost">
+Refresh Overview
+</button>
+
+</section>
+  <!-- CAMPAIGN MANAGEMENT -->
+<section id="campaigns" class="section panel">
+
+  <h2>🎄 Campaign Management</h2>
+
+  <p class="muted">
+    Create and manage one MINISAVE savings campaign at a time.
+  </p>
+
+  <div id="campaignStatus" class="notice">
+    Loading campaign information...
+  </div>
+
+  <h3>Create New Campaign</h3>
+
+  <form id="campaignForm">
+
+    <label>Campaign Name</label>
+    <input id="campaignTitle"
+      type="text"
+      placeholder="MINISAVE Christmas Savings Campaign"
+      required>
+
+    <label>Campaign Description</label>
+    <textarea id="campaignDescription"
+      rows="4"
+      placeholder="Describe your campaign..."
+      required></textarea>
+
+    <label>Overall Campaign Target (GH₵)</label>
+    <input id="campaignTarget"
+      type="number"
+      min="1"
+      step="0.01"
+      placeholder="10000"
+      required>
+
+    <label>Campaign Start Date</label>
+    <input id="campaignStart"
+      type="datetime-local"
+      required>
+
+    <label>Campaign End Date</label>
+    <input id="campaignEnd"
+      type="datetime-local"
+      required>
+    <hr>
+
+<h3>🖼️ Campaign Banner</h3>
+
+<p class="muted">
+  Upload the banner customers will see in the MINISAVE carousel.
+</p>
+
+<label>Upload Campaign Banner</label>
+
+<input
+  type="file"
+  id="campaignBanner"
+  accept="image/*"
+  required
+>
+
+<img
+  id="campaignBannerPreview"
+  src=""
+  alt="Campaign banner preview"
+  style="
+    display:none;
+    width:100%;
+    max-width:400px;
+    height:180px;
+    object-fit:cover;
+    border-radius:14px;
+    margin-top:12px;
+  "
+>
+
+    <h3>🏆 Winner Rewards</h3>
+
+    <p class="muted">
+      Set the rewards for the four highest contributors.
+    </p>
+
+    <div class="list-item">
+      <strong>1st Position</strong>
+      <label>Reward Name</label>
+      <input id="rewardName1" value="First Prize" required>
+      <label>Cash Reward (GH₵)</label>
+      <input id="rewardAmount1" type="number" min="0" step="0.01" required>
+    </div>
+
+    <div class="list-item">
+      <strong>2nd Position</strong>
+      <label>Reward Name</label>
+      <input id="rewardName2" value="Second Prize" required>
+      <label>Cash Reward (GH₵)</label>
+      <input id="rewardAmount2" type="number" min="0" step="0.01" required>
+    </div>
+
+    <div class="list-item">
+      <strong>3rd Position</strong>
+      <label>Reward Name</label>
+      <input id="rewardName3" value="Third Prize" required>
+      <label>Cash Reward (GH₵)</label>
+      <input id="rewardAmount3" type="number" min="0" step="0.01" required>
+    </div>
+
+    <div class="list-item">
+      <strong>4th Position</strong>
+      <label>Reward Name</label>
+      <input id="rewardName4" value="Fourth Prize" required>
+      <label>Cash Reward (GH₵)</label>
+      <input id="rewardAmount4" type="number" min="0" step="0.01" required>
+    </div>
+
+    <button type="submit" class="full">
+      Create & Publish Campaign
+    </button>
+
+    <p id="campaignFormMessage" class="message"></p>
+
+  </form>
+
+  <hr>
+
+  <h3>Current Campaign</h3>
+
+  <div id="currentCampaign">
+    Loading...
+  </div>
+
+  <h3>Campaign Participants</h3>
+
+  <div id="campaignParticipants">
+    No campaign selected.
+  </div>
+
+  <h3>Campaign Leaderboard</h3>
+
+  <div id="campaignLeaderboard">
+    No campaign selected.
+  </div>
+    <h3>Final Campaign Winners</h3>
+
+  <div id="campaignWinners">
+    Winners have not been finalized.
+  </div>
+
+</section>
+  <!-- MINISAVE TEAM CAROUSEL MANAGEMENT -->
+<section class="admin-section" id="teamCarouselManagement">
+
+  <h2>🖼️ Carousel & Team Pictures</h2>
+
+  <p>Manage the pictures displayed in the customer dashboard banner.</p>
+
+  <hr>
+
+  <!-- FOUNDER -->
+  <h3>👨 Founder</h3>
+
+  <label>Founder Name</label>
+  <input type="text" id="founderName" placeholder="Enter founder name">
+
+  <label>Founder Picture</label>
+  <input type="file" id="founderImage" accept="image/*">
+
+  <img id="founderPreview" style="display:none;width:120px;height:120px;object-fit:cover;border-radius:12px;">
+
+  <hr>
+
+  <!-- ADMIN 1 -->
+  <h3>👨 Administrator 1</h3>
+
+  <label>Administrator Name</label>
+  <input type="text" id="adminOneName" placeholder="Enter administrator name">
+
+  <label>Administrator Picture</label>
+  <input type="file" id="adminOneImage" accept="image/*">
+
+  <img id="adminOnePreview" style="display:none;width:120px;height:120px;object-fit:cover;border-radius:12px;">
+
+  <hr>
+
+  <!-- ADMIN 2 -->
+  <h3>👩 Administrator 2</h3>
+
+  <label>Administrator Name</label>
+  <input type="text" id="adminTwoName" placeholder="Enter administrator name">
+
+  <label>Administrator Picture</label>
+  <input type="file" id="adminTwoImage" accept="image/*">
+
+  <img id="adminTwoPreview" style="display:none;width:120px;height:120px;object-fit:cover;border-radius:12px;">
+
+  <hr>
+
+  <button type="button" id="saveTeamCarousel">
+    SAVE TEAM PICTURES
+  </button>
+
+  <p id="teamCarouselMessage"></p>
+
+</section>
+<!-- END TEAM CAROUSEL MANAGEMENT -->
+
+<!-- ANNOUNCEMENTS -->
+<section id="announcements" class="section">
+
+  <h2>Send Announcement</h2>
+  <p class="muted">Send a message to all MINISAVE customers.</p>
+
+  <form id="announcementForm">
+
+    <label for="announcementTitle">Announcement Title</label>
+    <input
+      type="text"
+      id="announcementTitle"
+      placeholder="Enter announcement title"
+      required
+    >
+
+    <label for="announcementMessage">Message</label>
+    <textarea
+      id="announcementMessage"
+      placeholder="Write your announcement here..."
+      rows="5"
+      required
+    ></textarea>
+
+    <button type="submit">Send to All Customers</button>
+
+    <p id="announcementStatus" role="status"></p>
+
+  </form>
+
+</section>
+  
+<!-- DEPOSITS -->
+
+<section id="deposits" class="section panel">
+
+<h3>Deposit Requests</h3>
+
+<button id="refreshDeposits" class="ghost">Refresh</button>
+
+<div id="depositsList">Loading...</div>
+
+</section>
+
+
+<!-- WITHDRAWALS -->
+
+<section id="withdrawals" class="section panel">
+
+<h3>Withdrawal Requests</h3>
+
+<button id="refreshWithdrawals" class="ghost">Refresh</button>
+
+<div id="withdrawalsList">Loading...</div>
+
+</section>
+
+
+<!-- CUSTOMERS -->
+
+<section id="customers" class="section panel">
+
+<h3>Customers</h3>
+
+<button id="refreshCustomers" class="ghost">Refresh</button>
+
+<div id="customersList">Loading...</div>
+
+</section>
+
+
+<!-- CUSTOMER BALANCES -->
+
+<section id="balances" class="section panel">
+
+<h3>Customer Balances</h3>
+
+<p class="muted">
+Monitor every customer's current wallet balance.
+</p>
+
+<div class="stat">
+<small>Total Money in Customer Wallets</small>
+<strong id="balanceGrandTotal">Loading...</strong>
+</div>
+
+<button id="refreshBalances" class="ghost">Refresh Balances</button>
+
+<div id="balancesList">Loading...</div>
+
+</section>
+
+
+<!-- TRANSACTIONS -->
+
+<section id="transactions" class="section panel">
+
+<h3>Transactions</h3>
+
+<button id="refreshTransactions" class="ghost">Refresh</button>
+
+<div id="transactionsList">Loading...</div>
+
+</section>
+
+
+<!-- COMMISSIONS -->
+
+<section id="commissions" class="section panel">
+
+<h3>Withdrawal Commissions</h3>
+
+<div class="stat">
+<small>Commission Earned This Period</small>
+<strong id="commissionTotal">Loading...</strong>
+</div>
+
+<button id="refreshCommissions" class="ghost">Refresh</button>
+
+<div id="commissionsList">Loading...</div>
+
+</section>
+
+</section>
+
+</main>
+
+<footer>MINISAVE · Save Small. Grow Big.</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+"https://gshvkeyncykxkdbwdlum.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"sb_publishable_Dh8aZfZL4PcoziJx0pmh5g_ms6Fp3uO";
+
+const db = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
+);
+
+const loginView = document.getElementById("loginView");
+const dashboardView = document.getElementById("dashboardView");
+const loginMessage = document.getElementById("loginMessage");
+
+let reportingStart = null;
+
+
+/* UTILITIES */
+
+function money(value) {
+return "GH₵ " + Number(value || 0).toFixed(2);
+}
+
+function showLogin(message="") {
+loginView.hidden = false;
+dashboardView.hidden = true;
+loginMessage.textContent = message;
+}
+
+function showDashboard() {
+loginView.hidden = true;
+dashboardView.hidden = false;
+}
+
+function safeText(value) {
+return value == null ? "" : String(value);
+}
+
+function createCard() {
+const card = document.createElement("div");
+card.className = "list-item";
+return card;
+}
+
+
+/* ADMIN VERIFICATION */
+
+async function verifyAdmin() {
+
+const {data:{session},error:sessionError} =
+await db.auth.getSession();
+
+if(sessionError || !session) {
+showLogin();
+return;
+}
+
+const {data:profile,error} = await db
+.from("profiles")
+.select("role,email,full_name")
+.eq("id",session.user.id)
+.maybeSingle();
+
+if(error || !profile || profile.role !== "admin") {
+
+await db.auth.signOut();
+
+showLogin("Access denied. Administrator account required.");
+return;
+}
+
+document.getElementById("adminEmail").textContent =
+session.user.email || profile.email || "Admin";
+
+showDashboard();
+
+await Promise.all([
+loadAdminOverview(),
+loadAdminDeposits(),
+loadAdminWithdrawals(),
+loadAdminCustomers(),
+loadAdminBalances(),
+loadAdminTransactions(),
+loadAdminCommissions(),
+loadAdminCampaigns()
+]);
+
+}
+
+
+/* REPORTING START */
+
+async function loadReportingStart() {
+
+const {data,error} = await db
+.from("admin_settings")
+.select("reporting_start_at")
+.eq("id",1)
+.maybeSingle();
+
+if(error) {
+console.error(error);
+reportingStart = null;
+return;
+}
+
+reportingStart = data?.reporting_start_at || null;
+
+}
+
+
+/* EMAIL LOOKUP */
+
+async function getEmails(userIds) {
+
+const ids = [...new Set((userIds || []).filter(Boolean))];
+
+if(!ids.length) return {};
+
+const {data,error} = await db
+.from("profiles")
+.select("id,email,full_name")
+.in("id",ids);
+
+if(error) {
+console.error("Email lookup error:",error);
+return {};
+}
+
+const map = {};
+
+(data || []).forEach(profile => {
+map[profile.id] = {
+email:profile.email || "Email unavailable",
+name:profile.full_name || ""
+};
+});
+
+return map;
+
+}
+
+
+/* OVERVIEW */
+
+async function loadAdminOverview() {
+
+const ids = [
+"totalCustomers",
+"totalDeposits",
+"totalWithdrawals",
+"totalWallets",
+"pendingDeposits",
+"pendingWithdrawals",
+"totalCommission"
+];
+
+ids.forEach(id => {
+document.getElementById(id).textContent = "Loading...";
+});
+
+try {
+
+const [
+customers,
+deposits,
+withdrawals,
+wallets,
+pendingDeposits,
+pendingWithdrawals,
+commissions
+] = await Promise.all([
+
+db.from("profiles")
+.select("id",{count:"exact",head:true}),
+
+db.from("deposits")
+.select("amount,status,created_at"),
+
+db.from("withdrawals")
+.select("amount,status,created_at"),
+
+db.from("wallets")
+.select("balance"),
+
+db.from("deposits")
+.select("id",{count:"exact",head:true})
+.eq("status","pending"),
+
+db.from("withdrawals")
+.select("id",{count:"exact",head:true})
+.eq("status","pending"),
+
+db.from("withdrawal_commissions")
+.select("amount,created_at")
+
+]);
+
+const results = [
+customers,deposits,withdrawals,wallets,
+pendingDeposits,pendingWithdrawals,commissions
+];
+
+const failed = results.find(r=>r.error);
+
+if(failed) throw failed.error;
+
+const periodRows = rows =>
+(rows || []).filter(row =>
+!reportingStart || new Date(row.created_at) >= new Date(reportingStart)
+);
+
+const sum = (rows,field) =>
+(rows || []).reduce((t,r)=>t+Number(r[field]||0),0);
+
+const currentDeposits = periodRows(deposits.data);
+const currentWithdrawals = periodRows(withdrawals.data);
+const currentCommissions = periodRows(commissions.data);
+
+document.getElementById("totalCustomers").textContent =
+customers.count ?? 0;
+
+document.getElementById("totalDeposits").textContent =
+money(sum(currentDeposits,"amount"));
+
+document.getElementById("totalWithdrawals").textContent =
+money(sum(currentWithdrawals,"amount"));
+
+document.getElementById("totalWallets").textContent =
+money(sum(wallets.data,"balance"));
+
+document.getElementById("pendingDeposits").textContent =
+pendingDeposits.count ?? 0;
+
+document.getElementById("pendingWithdrawals").textContent =
+pendingWithdrawals.count ?? 0;
+
+document.getElementById("totalCommission").textContent =
+money(sum(currentCommissions,"amount"));
+
+} catch(error) {
+
+console.error(error);
+
+ids.forEach(id=>{
+document.getElementById(id).textContent = "Unavailable";
+});
+
+}
+
+}
+
+
+/* DEPOSITS */
+
+async function loadAdminDeposits() {
+
+const box = document.getElementById("depositsList");
+box.textContent = "Loading deposits...";
+
+const {data,error} = await db
+.from("deposits")
+.select("id,user_id,amount,momo_number,momo_transaction_id,status,created_at")
+.order("created_at",{ascending:false});
+
+if(error) {
+box.textContent = "Error: "+error.message;
+return;
+}
+
+const visible = (data||[]).filter(item=>
+item.status==="pending" ||
+!reportingStart ||
+new Date(item.created_at)>=new Date(reportingStart)
+);
+
+if(!visible.length) {
+box.textContent = "No deposit requests.";
+return;
+}
+
+const emails = await getEmails(visible.map(d=>d.user_id));
+
+box.innerHTML = "";
+
+visible.forEach(deposit=>{
+
+const card = createCard();
+
+const title = document.createElement("strong");
+title.textContent = money(deposit.amount);
+
+const details = document.createElement("p");
+details.textContent =
+"Customer: "+(emails[deposit.user_id]?.email||"Email unavailable")+
+" | MoMo: "+(deposit.momo_number||"Not provided")+
+" | Reference: "+(deposit.momo_transaction_id||"Not provided")+
+" | Status: "+deposit.status;
+
+const date = document.createElement("small");
+date.textContent = new Date(deposit.created_at).toLocaleString();
+
+card.append(title,details,date);
+
+if(deposit.status==="pending") {
+
+const ref = document.createElement("input");
+ref.placeholder="MoMo transaction reference";
+
+const approve = document.createElement("button");
+approve.textContent="Approve Deposit";
+
+approve.onclick=async()=>{
+
+if(!ref.value.trim()) {
+alert("Enter transaction reference.");
+return;
+}
+
+if(!confirm("Approve this deposit?")) return;
+
+approve.disabled=true;
+
+const {data,error}=await db.rpc("approve_deposit",{
+p_deposit_id:deposit.id,
+p_momo_transaction_id:ref.value.trim()
+});
+
+if(error) {
+alert(error.message);
+approve.disabled=false;
+return;
+}
+
+alert(data||"Deposit approved.");
+
+await Promise.all([
+loadAdminDeposits(),
+loadAdminOverview(),
+loadAdminTransactions()
+]);
+
+};
+
+const reject = document.createElement("button");
+reject.textContent="Reject";
+reject.className="ghost";
+
+reject.onclick=async()=>{
+
+if(!confirm("Reject deposit?")) return;
+
+const {data,error}=await db.rpc("reject_deposit",{
+p_deposit_id:deposit.id
+});
+
+if(error) {
+alert(error.message);
+return;
+}
+
+alert(data||"Rejected.");
+
+await loadAdminDeposits();
+await loadAdminOverview();
+
+};
+
+card.append(ref,approve,reject);
+
+}
+
+box.appendChild(card);
+
+});
+
+}
+
+
+/* WITHDRAWALS */
+
+async function loadAdminWithdrawals() {
+
+const box = document.getElementById("withdrawalsList");
+box.textContent="Loading withdrawals...";
+
+const {data,error}=await db
+.from("withdrawals")
+.select("id,user_id,amount,momo_number,status,created_at")
+.order("created_at",{ascending:false});
+
+if(error) {
+box.textContent="Error: "+error.message;
+return;
+}
+
+const visible=(data||[]).filter(item=>
+item.status==="pending" ||
+!reportingStart ||
+new Date(item.created_at)>=new Date(reportingStart)
+);
+
+if(!visible.length) {
+box.textContent="No withdrawal requests.";
+return;
+}
+
+const emails=await getEmails(visible.map(w=>w.user_id));
+
+box.innerHTML="";
+
+visible.forEach(withdrawal=>{
+
+const card=createCard();
+
+const title=document.createElement("strong");
+title.textContent=money(withdrawal.amount);
+
+const details=document.createElement("p");
+details.textContent=
+"Customer: "+(emails[withdrawal.user_id]?.email||"Email unavailable")+
+" | MoMo: "+(withdrawal.momo_number||"Not provided")+
+" | Status: "+withdrawal.status;
+
+const date=document.createElement("small");
+date.textContent=new Date(withdrawal.created_at).toLocaleString();
+
+card.append(title,details,date);
+
+if(withdrawal.status==="pending") {
+
+const ref=document.createElement("input");
+ref.placeholder="MoMo payment reference";
+
+const approve=document.createElement("button");
+approve.textContent="Approve Withdrawal";
+
+approve.onclick=async()=>{
+
+if(!ref.value.trim()) {
+alert("Enter payment reference.");
+return;
+}
+
+if(!confirm("Confirm that payment has been made?")) return;
+
+approve.disabled=true;
+
+const {data,error}=await db.rpc("approve_withdrawal",{
+p_withdrawal_id:withdrawal.id,
+p_momo_transaction_id:ref.value.trim()
+});
+
+if(error) {
+alert(error.message);
+approve.disabled=false;
+return;
+}
+
+alert(data||"Withdrawal approved.");
+
+await Promise.all([
+loadAdminWithdrawals(),
+loadAdminOverview(),
+loadAdminCommissions(),
+loadAdminTransactions()
+]);
+
+};
+
+const reject=document.createElement("button");
+reject.textContent="Reject";
+reject.className="ghost";
+
+reject.onclick=async()=>{
+
+if(!confirm("Reject withdrawal?")) return;
+
+const {data,error}=await db.rpc("reject_withdrawal",{
+p_withdrawal_id:withdrawal.id
+});
+
+if(error) {
+alert(error.message);
+return;
+}
+
+alert(data||"Withdrawal rejected.");
+
+await loadAdminWithdrawals();
+await loadAdminOverview();
+
+};
+
+card.append(ref,approve,reject);
+
+}
+
+box.appendChild(card);
+
+});
+
+}
+
+
+/* CUSTOMERS */
+
+async function loadAdminCustomers() {
+
+const box=document.getElementById("customersList");
+box.textContent="Loading customers...";
+
+const {data,error}=await db
+.from("profiles")
+.select("id,email,full_name,role")
+.order("full_name",{ascending:true});
+
+if(error) {
+box.textContent=error.message;
+return;
+}
+
+if(!data?.length) {
+box.textContent="No customers.";
+return;
+}
+
+box.innerHTML="";
+
+data.forEach(customer=>{
+
+const card=createCard();
+
+const title=document.createElement("strong");
+title.textContent=customer.full_name||"Unnamed customer";
+
+const details=document.createElement("p");
+details.textContent=
+"Email: "+(customer.email||"Email unavailable")+
+" | Role: "+(customer.role||"customer");
+
+card.append(title,details);
+
+box.appendChild(card);
+
+});
+
+}
+
+
+/* CUSTOMER BALANCES */
+
+async function loadAdminBalances() {
+
+const box=document.getElementById("balancesList");
+const totalBox=document.getElementById("balanceGrandTotal");
+
+box.textContent="Loading balances...";
+totalBox.textContent="Loading...";
+
+const {data:profiles,error:profileError}=await db
+.from("profiles")
+.select("id,email,full_name,role")
+.order("full_name",{ascending:true});
+
+if(profileError) {
+box.textContent=profileError.message;
+totalBox.textContent="Unavailable";
+return;
+}
+
+const {data:wallets,error:walletError}=await db
+.from("wallets")
+.select("user_id,balance");
+
+if(walletError) {
+box.textContent=walletError.message;
+totalBox.textContent="Unavailable";
+return;
+}
+
+const walletMap={};
+
+(wallets||[]).forEach(wallet=>{
+walletMap[wallet.user_id]=Number(wallet.balance||0);
+});
+
+const total=(wallets||[]).reduce(
+(sum,w)=>sum+Number(w.balance||0),0
+);
+
+totalBox.textContent=money(total);
+
+box.innerHTML="";
+
+(profiles||[]).forEach(customer=>{
+
+const card=createCard();
+
+const title=document.createElement("strong");
+title.textContent=customer.full_name||"Unnamed customer";
+
+const email=document.createElement("p");
+email.textContent=customer.email||"Email unavailable";
+
+const balance=document.createElement("p");
+balance.innerHTML="<strong>Wallet Balance: "+
+money(walletMap[customer.id]||0)+"</strong>";
+
+card.append(title,email,balance);
+
+box.appendChild(card);
+
+});
+
+}
+
+
+/* TRANSACTIONS */
+
+async function loadAdminTransactions() {
+
+const box=document.getElementById("transactionsList");
+box.textContent="Loading transactions...";
+
+const {data,error}=await db
+.from("transactions")
+.select("user_id,type,amount,description,created_at")
+.order("created_at",{ascending:false})
+.limit(500);
+
+if(error) {
+box.textContent=error.message;
+return;
+}
+
+const visible=(data||[]).filter(t=>
+!reportingStart ||
+new Date(t.created_at)>=new Date(reportingStart)
+);
+
+if(!visible.length) {
+box.textContent="No current transactions.";
+return;
+}
+
+const emails=await getEmails(visible.map(t=>t.user_id));
+
+box.innerHTML="";
+
+visible.forEach(transaction=>{
+
+const card=createCard();
+
+const title=document.createElement("strong");
+title.textContent=
+(transaction.type||"Transaction")+" — "+money(transaction.amount);
+
+const details=document.createElement("p");
+details.textContent=
+"Customer: "+(emails[transaction.user_id]?.email||"Email unavailable")+
+" | "+(transaction.description||"No description");
+
+const date=document.createElement("small");
+date.textContent=new Date(transaction.created_at).toLocaleString();
+
+card.append(title,details,date);
+box.appendChild(card);
+
+});
+
+}
+
+
+/* COMMISSIONS */
+
+async function loadAdminCommissions() {
+
+const box=document.getElementById("commissionsList");
+const totalBox=document.getElementById("commissionTotal");
+
+box.textContent="Loading...";
+totalBox.textContent="Loading...";
+
+const {data,error}=await db
+.from("withdrawal_commissions")
+.select("id,withdrawal_id,withdrawal_amount,amount,created_at")
+.order("created_at",{ascending:false});
+
+if(error) {
+box.textContent=error.message;
+totalBox.textContent="Unavailable";
+return;
+}
+
+const visible=(data||[]).filter(item=>
+!reportingStart ||
+new Date(item.created_at)>=new Date(reportingStart)
+);
+
+const total=visible.reduce(
+(sum,item)=>sum+Number(item.amount||0),0
+);
+
+totalBox.textContent=money(total);
+
+if(!visible.length) {
+box.textContent="No commissions this period.";
+return;
+}
+
+box.innerHTML="";
+
+visible.forEach(item=>{
+
+const card=createCard();
+
+const title=document.createElement("strong");
+title.textContent="Commission: "+money(item.amount);
+
+const details=document.createElement("p");
+details.textContent=
+"Withdrawal: "+money(item.withdrawal_amount)+
+" | Rate: 1%";
+
+const date=document.createElement("small");
+date.textContent=new Date(item.created_at).toLocaleString();
+
+card.append(title,details,date);
+box.appendChild(card);
+
+});
+
+}
+/* CAMPAIGN BANNER PREVIEW */
+
+const campaignBannerInput =
+  document.getElementById("campaignBanner");
+
+const campaignBannerPreview =
+  document.getElementById("campaignBannerPreview");
+
+campaignBannerInput.addEventListener("change", () => {
+
+  const file = campaignBannerInput.files[0];
+
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select a valid image.");
+    campaignBannerInput.value = "";
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    alert("Campaign banner must not exceed 5MB.");
+    campaignBannerInput.value = "";
+    return;
+  }
+
+  campaignBannerPreview.src = URL.createObjectURL(file);
+  campaignBannerPreview.style.display = "block";
+
+});
+/* =====================================
+   MINISAVE CAMPAIGN MANAGEMENT
+===================================== */
+
+let selectedCampaignId = null;
+
+
+/* CAMPAIGN FORM */
+
+document.getElementById("campaignForm").addEventListener("submit", async event => {
+
+  event.preventDefault();
+
+  const message = document.getElementById("campaignFormMessage");
+  const submitButton = event.target.querySelector('button[type="submit"]');
+
+  const title = document.getElementById("campaignTitle").value.trim();
+  const description = document.getElementById("campaignDescription").value.trim();
+  const target = Number(document.getElementById("campaignTarget").value);
+
+  const startValue = document.getElementById("campaignStart").value;
+  const endValue = document.getElementById("campaignEnd").value;
+
+  const start = new Date(startValue);
+  const end = new Date(endValue);
+
+  const rewards = [];
+
+  for (let position = 1; position <= 4; position++) {
+
+    const name = document.getElementById("rewardName" + position).value.trim();
+    const amount = Number(document.getElementById("rewardAmount" + position).value);
+
+    if (!name || !Number.isFinite(amount) || amount < 0) {
+      message.textContent = "Please enter valid names and reward amounts for all four positions.";
+      return;
+    }
+
+    rewards.push({
+      position,
+      reward_name: name,
+      reward_description: name,
+      reward_amount: amount
+    });
+
+  }
+
+  if (!title || !description || !Number.isFinite(target) || target <= 0) {
+    message.textContent = "Please complete all campaign details correctly.";
+    return;
+  }
+
+  if (!startValue || !endValue || isNaN(start.getTime()) || isNaN(end.getTime()) || end <= start) {
+    message.textContent = "The campaign end date must be later than its start date.";
+    return;
+  }
+
+  submitButton.disabled = true;
+  message.textContent = "Checking existing campaigns...";
+
+  try {
+
+    const { data: existing, error: existingError } = await db
+      .from("campaigns")
+      .select("id")
+      .eq("status", "active")
+      .limit(1);
+
+    if (existingError) throw existingError;
+
+    if (existing && existing.length > 0) {
+      throw new Error("There is already an active campaign. Close or remove it before creating another.");
+    }
+
+    const { data: { user }, error: userError } = await db.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error("Your admin session has expired. Please sign in again.");
+    }
+
+    message.textContent = "Creating campaign...";
+
+    const { data: campaign, error: campaignError } = await db
+      .from("campaigns")
+      .insert({
+        title,
+        description,
+        target_amount: target,
+        starts_at: start.toISOString(),
+        ends_at: end.toISOString(),
+        status: "draft",
+        created_by: user.id
+      })
+      .select()
+      .single();
+
+  if (campaignError) throw campaignError;
+
+
+// UPLOAD CAMPAIGN BANNER
+const bannerFile = document.getElementById("campaignBanner").files[0];
+
+if (!bannerFile) {
+  throw new Error("Please select a campaign banner.");
+}
+
+if (!bannerFile.type.startsWith("image/") ||
+    bannerFile.size > 5 * 1024 * 1024) {
+  throw new Error("Please select a valid image under 5MB.");
+}
+
+const bannerPath =
+  campaign.id + "/" + Date.now() + "-" +
+  bannerFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+message.textContent = "Uploading campaign banner...";
+
+const { error: bannerUploadError } = await db.storage
+  .from("minisave-campaign-banners")
+  .upload(bannerPath, bannerFile, {
+    upsert: false,
+    contentType: bannerFile.type
+  });
+
+if (bannerUploadError) {
+  await db.from("campaigns")
+    .update({ status: "deleted" })
+    .eq("id", campaign.id);
+
+  throw bannerUploadError;
+}
+
+
+// GET PUBLIC IMAGE LINK
+const { data: bannerPublicData } = db.storage
+  .from("minisave-campaign-banners")
+  .getPublicUrl(bannerPath);
+
+
+// SAVE BANNER LINK TO CAMPAIGN
+const { error: bannerSaveError } = await db
+  .from("campaigns")
+  .update({
+    banner_url: bannerPublicData.publicUrl
+  })
+  .eq("id", campaign.id);
+
+if (bannerSaveError) {
+  await db.from("campaigns")
+    .update({ status: "deleted" })
+    .eq("id", campaign.id);
+
+  throw bannerSaveError;
+}
+
+
+// SAVE CAMPAIGN REWARDS
+const rewardRows = rewards.map(reward => ({
+  campaign_id: campaign.id,
+  ...reward
+}));
+
+    const { error: rewardError } = await db
+      .from("campaign_rewards")
+      .insert(rewardRows);
+
+    if (rewardError) {
+
+      await db
+        .from("campaigns")
+        .update({ status: "deleted" })
+        .eq("id", campaign.id);
+
+      throw rewardError;
+    }
+
+    message.textContent = "Publishing campaign...";
+
+    const { error: publishError } = await db
+      .from("campaigns")
+      .update({ status: "active" })
+      .eq("id", campaign.id)
+      .eq("status", "draft");
+
+    if (publishError) {
+
+      await db
+        .from("campaigns")
+        .update({ status: "deleted" })
+        .eq("id", campaign.id);
+
+      throw publishError;
+    }
+
+    event.target.reset();
+
+    document.getElementById("rewardName1").value = "First Prize";
+    document.getElementById("rewardName2").value = "Second Prize";
+    document.getElementById("rewardName3").value = "Third Prize";
+    document.getElementById("rewardName4").value = "Fourth Prize";
+
+    message.style.color = "green";
+    message.textContent = "Campaign created and published successfully!";
+
+    await loadAdminCampaigns();
+
+  } catch (error) {
+
+    console.error("Campaign creation error:", error);
+
+    message.style.color = "#a12b2b";
+    message.textContent = error.message || "Unable to create campaign.";
+
+  } finally {
+
+    submitButton.disabled = false;
+
+  }
+
+});
+
+
+/* LOAD CAMPAIGNS */
+
+async function loadAdminCampaigns() {
+
+  const statusBox = document.getElementById("campaignStatus");
+  const currentBox = document.getElementById("currentCampaign");
+
+  statusBox.textContent = "Loading campaign information...";
+  currentBox.textContent = "Loading...";
+
+  try {
+
+    const campaignRequest = db
+  .from("campaigns")
+  .select("*")
+  .neq("status", "deleted")
+  .order("created_at", { ascending: false });
+
+const timeoutRequest = new Promise((_, reject) => {
+  setTimeout(() => {
+    reject(new Error("Supabase campaign request timed out after 15 seconds."));
+  }, 15000);
+});
+
+const { data: campaigns, error } = await Promise.race([
+  campaignRequest,
+  timeoutRequest
+]);
+
+if (error) throw error;
+      
+      
+
+  
+
+    if (!campaigns || campaigns.length === 0) {
+
+      selectedCampaignId = null;
+
+      statusBox.textContent = "No campaign has been created yet.";
+      currentBox.textContent = "Create your first campaign using the form above.";
+
+      document.getElementById("campaignParticipants").textContent = "No campaign selected.";
+      document.getElementById("campaignLeaderboard").textContent = "No campaign selected.";
+
+      return;
+    }
+
+    const activeCampaign = campaigns.find(c => c.status === "active");
+
+    const campaign = activeCampaign || campaigns[0];
+
+    selectedCampaignId = campaign.id;
+
+    const { data: contributions, error: contributionError } = await db
+      .from("campaign_contributions")
+      .select("amount")
+      .eq("campaign_id", campaign.id);
+
+    if (contributionError) throw contributionError;
+
+    const totalContribution = (contributions || []).reduce(
+      (sum, item) => sum + Number(item.amount || 0),
+      0
+    );
+
+    const { count: participantCount, error: participantCountError } = await db
+      .from("campaign_participants")
+      .select("id", { count: "exact", head: true })
+      .eq("campaign_id", campaign.id);
+
+    if (participantCountError) throw participantCountError;
+
+    const progress = Math.min(
+      100,
+      campaign.target_amount > 0
+        ? (totalContribution / Number(campaign.target_amount)) * 100
+        : 0
+    );
+
+    statusBox.textContent =
+      "Campaign status: " + campaign.status.toUpperCase();
+
+    currentBox.innerHTML = "";
+
+    const card = createCard();
+
+    const heading = document.createElement("h3");
+    heading.textContent = campaign.title;
+
+    const description = document.createElement("p");
+    description.textContent = campaign.description || "";
+
+    const details = document.createElement("p");
+    details.textContent =
+      "Target: " + money(campaign.target_amount) +
+      " | Contributions: " + money(totalContribution) +
+      " | Participants: " + (participantCount || 0);
+
+    const dates = document.createElement("p");
+    dates.textContent =
+      "Starts: " + new Date(campaign.starts_at).toLocaleString() +
+      " | Ends: " + new Date(campaign.ends_at).toLocaleString();
+
+    const progressText = document.createElement("p");
+    progressText.textContent = "Target progress: " + progress.toFixed(1) + "%";
+
+    const progressBar = document.createElement("progress");
+    progressBar.max = 100;
+    progressBar.value = progress;
+    progressBar.style.width = "100%";
+
+    card.append(heading, description, details, dates, progressText, progressBar);
+
+    if (campaign.status === "active") {
+
+      const closeButton = document.createElement("button");
+      closeButton.textContent = "Close Campaign";
+      closeButton.className = "secondary";
+
+      closeButton.onclick = () => closeAdminCampaign(campaign.id);
+
+      card.appendChild(closeButton);
+
+    }
+        if (campaign.status === "closed") {
+
+      const finalizeButton = document.createElement("button");
+      finalizeButton.textContent = "Finalize Winners";
+      finalizeButton.className = "secondary";
+      finalizeButton.style.marginTop = "10px";
+
+      finalizeButton.onclick = () => finalizeCampaignWinners(campaign.id);
+
+      card.appendChild(finalizeButton);
+
+        }
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Remove Campaign";
+    deleteButton.className = "danger";
+
+    deleteButton.onclick = () => deleteAdminCampaign(campaign.id);
+
+    card.appendChild(deleteButton);
+
+    currentBox.appendChild(card);
+
+    await loadCampaignParticipants(campaign.id);
+    await loadCampaignLeaderboard(campaign.id);
+    await loadCampaignWinners(campaign.id);
+
+  } catch (error) {
+
+    console.error("Campaign loading error:", error);
+
+    statusBox.textContent = "Unable to load campaign: " + error.message;
+    currentBox.textContent = "Campaign information unavailable.";
+
+  }
+
+}
+
+
+/* LOAD PARTICIPANTS */
+
+async function loadCampaignParticipants(campaignId) {
+
+  const box = document.getElementById("campaignParticipants");
+
+  box.textContent = "Loading participants...";
+
+  const { data, error } = await db
+    .from("campaign_participants")
+    .select("id,user_id,full_name,phone,joined_at")
+    .eq("campaign_id", campaignId)
+    .order("joined_at", { ascending: true });
+
+  if (error) {
+    box.textContent = "Error: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.textContent = "No customers have joined this campaign yet.";
+    return;
+  }
+
+  const { data: contributions, error: contributionError } = await db
+    .from("campaign_contributions")
+    .select("participant_id,amount")
+    .eq("campaign_id", campaignId);
+
+  if (contributionError) {
+    box.textContent = "Unable to load contributions: " + contributionError.message;
+    return;
+  }
+
+  const totals = {};
+
+  (contributions || []).forEach(item => {
+
+    totals[item.participant_id] =
+      (totals[item.participant_id] || 0) + Number(item.amount || 0);
+
+  });
+
+  box.innerHTML = "";
+
+  data.forEach(participant => {
+
+    const card = createCard();
+
+    const name = document.createElement("strong");
+    name.textContent = participant.full_name;
+
+    const phone = document.createElement("p");
+    phone.textContent = "Phone: " + participant.phone;
+
+    const contribution = document.createElement("p");
+    contribution.textContent =
+      "Campaign contribution: " + money(totals[participant.id] || 0);
+
+    const joined = document.createElement("small");
+    joined.textContent =
+      "Joined: " + new Date(participant.joined_at).toLocaleString();
+
+    card.append(name, phone, contribution, joined);
+
+    box.appendChild(card);
+
+  });
+
+}
+
+
+/* LOAD LEADERBOARD */
+
+async function loadCampaignLeaderboard(campaignId) {
+
+  const box = document.getElementById("campaignLeaderboard");
+
+  box.textContent = "Loading leaderboard...";
+
+  const { data, error } = await db.rpc("get_campaign_leaderboard", {
+    p_campaign_id: campaignId
+  });
+
+  if (error) {
+    box.textContent = "Leaderboard error: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    box.textContent = "No contributions have been recorded yet.";
+    return;
+  }
+
+  box.innerHTML = "";
+
+  data.forEach(item => {
+
+    const card = createCard();
+
+    const rank = document.createElement("strong");
+    rank.textContent = "#" + item.rank + " — " + item.full_name;
+
+    const amount = document.createElement("p");
+    amount.textContent = "Contribution: " + money(item.contribution_total);
+
+    card.append(rank, amount);
+
+    box.appendChild(card);
+
+  });
+
+}
+/* FINALIZE CAMPAIGN WINNERS */
+
+async function finalizeCampaignWinners(campaignId) {
+
+  const confirmed = confirm(
+    "Finalize the campaign winners?\n\n" +
+    "The current contribution rankings will be frozen.\n" +
+    "Winners cannot be changed after finalization.\n\n" +
+    "Make sure all eligible deposits have been approved first."
+  );
+
+  if (!confirmed) return;
+
+  const { data: existing, error: checkError } = await db
+    .from("campaign_winners")
+    .select("id")
+    .eq("campaign_id", campaignId);
+
+  if (checkError) {
+    alert("Unable to check winners: " + checkError.message);
+    return;
+  }
+
+  if (existing && existing.length > 0) {
+    alert("Winners have already been finalized.");
+    await loadCampaignWinners(campaignId);
+    return;
+  }
+
+  const { data, error } = await db.rpc("finalize_campaign_winners", {
+    p_campaign_id: campaignId
+  });
+
+  if (error) {
+    alert("Unable to finalize winners: " + error.message);
+    return;
+  }
+
+  alert(data + " campaign winner(s) finalized successfully.");
+
+  await loadAdminCampaigns();
+}
+
+
+/* LOAD FINAL CAMPAIGN WINNERS */
+
+async function loadCampaignWinners(campaignId) {
+
+  const box = document.getElementById("campaignWinners");
+
+  box.textContent = "Loading final winners...";
+
+  const { data: winners, error } = await db
+    .from("campaign_winners")
+    .select("id, position, participant_id, reward_id, contribution_total")
+    .eq("campaign_id", campaignId)
+    .order("position", { ascending: true });
+
+  if (error) {
+    box.textContent = "Unable to load winners: " + error.message;
+    return;
+  }
+
+  if (!winners || winners.length === 0) {
+    box.textContent = "Winners have not been finalized.";
+    return;
+  }
+
+  const participantIds = winners.map(w => w.participant_id);
+  const rewardIds = winners.map(w => w.reward_id);
+
+  const { data: participants, error: participantError } = await db
+    .from("campaign_participants")
+    .select("id, full_name")
+    .in("id", participantIds);
+
+  if (participantError) {
+    box.textContent = "Unable to load winner names: " + participantError.message;
+    return;
+  }
+
+  const { data: rewards, error: rewardError } = await db
+    .from("campaign_rewards")
+    .select("id, reward_name, reward_amount")
+    .in("id", rewardIds);
+
+  if (rewardError) {
+    box.textContent = "Unable to load rewards: " + rewardError.message;
+    return;
+  }
+  const { data: claims, error: claimsError } = await db
+  .from("campaign_reward_claims")
+  .select("participant_id, reward_id")
+  .eq("campaign_id", campaignId);
+
+if (claimsError) {
+  box.textContent = "Unable to load claim status: " + claimsError.message;
+  return;
+}
+
+  box.innerHTML = "";
+
+  winners.forEach(winner => {
+
+    const participant = participants.find(p => p.id === winner.participant_id);
+    const reward = rewards.find(r => r.id === winner.reward_id);
+
+    const card = createCard();
+
+    const heading = document.createElement("h4");
+    heading.textContent =
+      "Position " + winner.position + " — " +
+      (participant ? participant.full_name : "Unknown winner");
+
+    const rewardText = document.createElement("p");
+    rewardText.textContent =
+      "Reward: " + (reward ? reward.reward_name : "Unknown reward") +
+      " (" + money(reward ? reward.reward_amount : 0) + ")";
+
+    const contribution = document.createElement("p");
+    contribution.textContent =
+      "Final contribution: " + money(winner.contribution_total);
+
+    const claimed = claims.some(claim =>
+  claim.participant_id === winner.participant_id &&
+  claim.reward_id === winner.reward_id
+);
+
+const claimStatus = document.createElement("p");
+claimStatus.textContent = claimed
+  ? "Status: REWARD CLAIMED"
+  : "Status: NOT YET CLAIMED";
+
+card.append(heading, rewardText, contribution, claimStatus);
+    box.appendChild(card);
+
+  });
+
+}
+
+/* CLOSE CAMPAIGN */
+
+async function closeAdminCampaign(campaignId) {
+
+  const confirmed = confirm(
+    "Close this campaign?\n\n" +
+    "Customers will no longer be able to join it.\n" +
+    "The campaign contribution records will be preserved."
+  );
+
+  if (!confirmed) return;
+
+  const { error } = await db
+    .from("campaigns")
+    .update({ status: "closed" })
+    .eq("id", campaignId)
+    .eq("status", "active");
+
+  if (error) {
+    alert("Unable to close campaign: " + error.message);
+    return;
+  }
+
+  alert("Campaign closed successfully.");
+
+  await loadAdminCampaigns();
+
+}
+
+
+/* REMOVE CAMPAIGN */
+
+async function deleteAdminCampaign(campaignId) {
+
+  const confirmed = confirm(
+    "Remove this campaign from the active campaign list?\n\n" +
+    "The campaign will be marked as deleted. " +
+    "Its financial records and customer wallet balances will not be deleted."
+  );
+
+  if (!confirmed) return;
+
+  const { data, error } = await db.rpc("admin_delete_campaign", {
+    p_campaign_id: campaignId
+  });
+
+  if (error) {
+    alert("Unable to remove campaign: " + error.message);
+    return;
+  }
+
+  alert(data || "Campaign removed.");
+
+  await loadAdminCampaigns();
+
+  }
+
+/* CLEAR HISTORY / START NEW PERIOD */
+
+document.getElementById("clearHistoryBtn").onclick=async()=>{
+
+const confirmed=confirm(
+"Start a new reporting period?\n\n"+
+"Old deposits, withdrawals, transactions and commissions "+
+"will disappear from the current dashboard view.\n\n"+
+"Customer wallet balances, accounts and savings goals "+
+"will NOT change.\n\n"+
+"Pending requests will remain visible.\n\n"+
+"Continue?"
+);
+
+if(!confirmed) return;
+
+const {error}=await db
+.from("admin_settings")
+.update({
+reporting_start_at:new Date().toISOString(),
+updated_at:new Date().toISOString()
+})
+.eq("id",1);
+
+if(error) {
+alert("Reset failed: "+error.message);
+return;
+}
+
+await loadReportingStart();
+
+await Promise.all([
+  loadAdminOverview(),
+  loadAdminDeposits(),
+  loadAdminWithdrawals(),
+  loadAdminCustomers(),
+  loadAdminBalances(),
+  loadAdminTransactions(),
+  loadAdminCommissions(),
+  loadAdminCampaigns(),
+  loadTeamCarouselSettings()
+]);
+
+alert("New reporting period started.");
+
+};
+
+
+/* NAVIGATION */
+
+document.querySelectorAll("nav [data-tab]").forEach(button=>{
+
+button.onclick=()=>{
+
+document.querySelectorAll("nav [data-tab]")
+.forEach(b=>b.classList.remove("active"));
+
+document.querySelectorAll(".section")
+.forEach(s=>s.classList.remove("active"));
+
+button.classList.add("active");
+
+document.getElementById(button.dataset.tab)
+.classList.add("active");
+
+};
+
+});
+
+
+/* REFRESH BUTTONS */
+
+document.getElementById("refreshOverview").onclick=loadAdminOverview;
+document.getElementById("refreshDeposits").onclick=loadAdminDeposits;
+document.getElementById("refreshWithdrawals").onclick=loadAdminWithdrawals;
+document.getElementById("refreshCustomers").onclick=loadAdminCustomers;
+document.getElementById("refreshBalances").onclick=loadAdminBalances;
+document.getElementById("refreshTransactions").onclick=loadAdminTransactions;
+document.getElementById("refreshCommissions").onclick=loadAdminCommissions;
+/* =================================
+   MINISAVE TEAM PICTURE MANAGEMENT
+================================= */
+
+const teamSlots = [
+  {
+    slot: "founder",
+    name: "founderName",
+    file: "founderImage",
+    preview: "founderPreview"
+  },
+  {
+    slot: "admin1",
+    name: "adminOneName",
+    file: "adminOneImage",
+    preview: "adminOnePreview"
+  },
+  {
+    slot: "admin2",
+    name: "adminTwoName",
+    file: "adminTwoImage",
+    preview: "adminTwoPreview"
+  }
+];
+
+let existingTeamSlides = {};
+
+// IMAGE PREVIEWS
+teamSlots.forEach(item => {
+
+  const input = document.getElementById(item.file);
+  const preview = document.getElementById(item.preview);
+
+  input.addEventListener("change", () => {
+
+    const file = input.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image.");
+      input.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Image must not exceed 5MB.");
+      input.value = "";
+      return;
+    }
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = "block";
+
+  });
+
+});
+
+
+// LOAD EXISTING TEAM PICTURES
+async function loadTeamCarouselSettings() {
+
+  const { data, error } = await db
+    .from("dashboard_team_slides")
+    .select("*");
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  existingTeamSlides = {};
+
+  data.forEach(item => {
+
+    existingTeamSlides[item.slot] = item;
+
+    const config = teamSlots.find(
+      slot => slot.slot === item.slot
+    );
+
+    if (!config) return;
+
+    document.getElementById(config.name).value =
+      item.display_name;
+
+    const preview = document.getElementById(config.preview);
+
+    preview.src = item.image_url;
+    preview.style.display = "block";
+
+  });
+
+}
+
+
+// SAVE TEAM PICTURES
+document.getElementById("saveTeamCarousel")
+.addEventListener("click", async () => {
+
+  const button = document.getElementById("saveTeamCarousel");
+  const message = document.getElementById("teamCarouselMessage");
+
+  button.disabled = true;
+  message.textContent = "Saving team pictures...";
+
+  try {
+
+    for (const item of teamSlots) {
+
+      const name = document.getElementById(item.name).value.trim();
+      const file = document.getElementById(item.file).files[0];
+
+      const existing = existingTeamSlides[item.slot];
+
+      if (!name) {
+        throw new Error("Please enter all three names.");
+      }
+
+      let imageUrl = existing ? existing.image_url : "";
+
+      if (file) {
+
+        const filePath =
+          item.slot + "/" + Date.now() + "-" +
+          file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+
+        const { error: uploadError } = await db.storage
+          .from("minisave-team-images")
+          .upload(filePath, file, {
+            upsert: false,
+            contentType: file.type
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicData } = db.storage
+          .from("minisave-team-images")
+          .getPublicUrl(filePath);
+
+        imageUrl = publicData.publicUrl;
+
+      }
+
+      if (!imageUrl) {
+        throw new Error("Please upload a picture for " + name + ".");
+      }
+
+      const { error } = await db
+        .from("dashboard_team_slides")
+        .upsert({
+          slot: item.slot,
+          display_name: name,
+          image_url: imageUrl,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: "slot"
+        });
+
+      if (error) throw error;
+
+    }
+
+    message.textContent = "Team pictures saved successfully!";
+
+    await loadTeamCarouselSettings();
+
+  } catch (error) {
+
+    console.error(error);
+    message.textContent = "Error: " + error.message;
+
+  } finally {
+
+    button.disabled = false;
+
+  }
+
+});
+
+/* LOGIN */
+
+document.getElementById("loginForm").onsubmit=async event=>{
+
+event.preventDefault();
+
+loginMessage.textContent="Signing in...";
+
+const email=document.getElementById("email").value.trim();
+const password=document.getElementById("password").value;
+
+const {error}=await db.auth.signInWithPassword({
+email,password
+});
+
+if(error) {
+loginMessage.textContent=error.message;
+return;
+}
+
+await verifyAdmin();
+
+};
+
+
+/* LOGOUT */
+
+document.getElementById("logoutBtn").onclick=async()=>{
+
+await db.auth.signOut();
+showLogin("Signed out.");
+
+};
+  // SEND ANNOUNCEMENT TO ALL CUSTOMERS
+
+document.getElementById("announcementForm").addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const title = document.getElementById("announcementTitle").value.trim();
+  const message = document.getElementById("announcementMessage").value.trim();
+  const status = document.getElementById("announcementStatus");
+
+  if (!title || !message) {
+    status.textContent = "Please enter both a title and message.";
+    return;
+  }
+
+  status.textContent = "Sending announcement...";
+
+  try {
+    const { data: { user }, error: userError } = await db.auth.getUser();
+
+    if (userError || !user) {
+      status.textContent = "Please sign in again.";
+      return;
+    }
+
+    const { error } = await db.from("notifications").insert({
+      title: title,
+      message: message,
+      created_by: user.id,
+      is_active: true
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    document.getElementById("announcementForm").reset();
+    status.textContent = "Announcement sent successfully!";
+
+  } catch (error) {
+    console.error("Announcement error:", error);
+    status.textContent = "Failed to send: " + error.message;
+  }
+});
+
+
+/* SESSION RESTORE */
+
+(async()=>{
+
+const {data:{session}}=await db.auth.getSession();
+
+if(session) {
+await verifyAdmin();
+}
+
+})();
+
+
+/* SERVICE WORKER */
+
+if("serviceWorker" in navigator) {
+
+window.addEventListener("load",()=>{
+navigator.serviceWorker.register("./sw.js")
+.catch(error=>console.error(error));
+});
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+"name": "MINISAVE Admin",
+"short_name": "MINISAVE",
+"description": "Private MINISAVE administration app",
+"start_url": "./index.html",
+"scope": "./",
+"display": "standalone",
+"orientation": "portrait",
+"background_color": "#08172f",
+"theme_color": "#08172f",
+"icons": [
+{
+"src": "icon.svg",
+"sizes": "any",
+"type": "image/svg+xml",
+"purpose": "any maskable"
+}
+]
+}
